@@ -45,9 +45,45 @@ const writeCounter = (count, callback) => {
 
 // Commit your progress: "Complete getNextUniqueId"
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => { //callback will take two params: err & id
+  // counter = counter + 1;
+  // return zeroPaddedNumber(counter);
+
+  //refactored
+  //read the current counter
+  readCounter((err, num) => {
+    //if it fails, write zero into the counter.txt file
+    //if the file already exists, take the number returned from the file, increment by 1
+    //skipping unique id 00000
+
+
+    if (err) {
+      throw new Error();
+    } else {
+      counter = num + 1;
+      writeCounter(counter, (err, id) => {
+        if (err) {
+          throw new Error();
+        } else {
+          callback(null, id);
+        }
+      });
+    }
+  });
+
+  //increment by 1
+  //write the file with the incremented counter
+
+  // var nextUniqueId;
+  //read from counter.txt to get current id
+
+  //write the new number to counter.txt
+  // writeCounter(counter, (err, counterString) => {
+  //   nextUniqueId = counterString;
+  // });
+
+  // return nextUniqueId;
+
 };
 
 

@@ -19,6 +19,22 @@ exports.create = (text, callback) => {
   //file contents = text parameter
 
   //from nodejs.org: It is unsafe to use fs.writeFile() multiple times on the same file without waiting for the callback. For this scenario, fs.createWriteStream() is recommended.
+
+  counter.getNextUniqueId((err, id) => {
+    if (err) {
+      throw new Error();
+    } else {
+      fs.writeFile("./data/" + id, text, (err, id) => {
+        console.log(path.join(exports.dataDir, id));
+        if (err) {
+          throw new Error();
+        } else {
+          callback(null, { id, text });
+        }
+      });
+    }
+  });
+
 };
 
 
@@ -28,10 +44,10 @@ exports.create = (text, callback) => {
 
 exports.readAll = (callback) => {
   // //ORIGINAL
-  // var data = _.map(items, (text, id) => {
-  //   return { id, text };
-  // });
-  // callback(null, data);
+  var data = _.map(items, (text, id) => {
+    return { id, text };
+  });
+  callback(null, data);
 
   //REFACTORED
   //declare an empty array, which will hold the todos (as objects)
@@ -42,12 +58,12 @@ exports.readAll = (callback) => {
 
 exports.readOne = (id, callback) => {
   // //ORIGINAL
-  // var text = items[id];
-  // if (!text) {
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   callback(null, { id, text });
-  // }
+  var text = items[id];
+  if (!text) {
+    callback(new Error(`No item with id: ${id}`));
+  } else {
+    callback(null, { id, text });
+  }
 
   //REFACTORED
   //read file at dataDir/[id]
@@ -58,13 +74,13 @@ exports.readOne = (id, callback) => {
 
 exports.update = (id, text, callback) => {
   // //ORIGINAL
-  // var item = items[id];
-  // if (!item) {
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   items[id] = text;
-  //   callback(null, { id, text });
-  // }
+  var item = items[id];
+  if (!item) {
+    callback(new Error(`No item with id: ${id}`));
+  } else {
+    items[id] = text;
+    callback(null, { id, text });
+  }
 
   //REFACTORED
   //USE THE CHECKFILE HELPER FUNTION HERE:  //check to see if a file exists at .data/[id] //if no, invoke callback(new Error)
@@ -73,14 +89,14 @@ exports.update = (id, text, callback) => {
 
 exports.delete = (id, callback) => {
   // //ORIGINAL
-  // var item = items[id];
-  // delete items[id];
-  // if (!item) {
-  //   // report an error if item not found
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   callback();
-  // }
+  var item = items[id];
+  delete items[id];
+  if (!item) {
+    // report an error if item not found
+    callback(new Error(`No item with id: ${id}`));
+  } else {
+    callback();
+  }
 
   //REFACTORED
   //USE THE CHECKFILE HELPER FUNTION HERE:  //check to see if a file exists at .data/[id] //if no, invoke callback(new Error)
@@ -92,12 +108,12 @@ exports.delete = (id, callback) => {
 
 exports.checkFile = (id, callback) => {
   let filepath = path.join(exports.dataDir, id);
-  if (fs.existsSync(filepath) ) {
+  if (fs.existsSync(filepath)) {
     return true;
   } else {
     return callback(new Error(`No item with id: ${id}`));
   }
-}
+};
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
 
