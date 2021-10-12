@@ -38,6 +38,13 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
+// Unique Identifier
+// All todo entries are identified by an auto-incrementing id. Currently, that id is a counter stored in memory.
+//Your first goal is to save the current state of the counter to the hard drive, so it's persisted between server restarts.
+//Do this by rewriting getNextUniqueId to make use of the provided readCounter and writeCounter functions.
+
+// Commit your progress: "Complete getNextUniqueId"
+
 exports.getNextUniqueId = () => {
   counter = counter + 1;
   return zeroPaddedNumber(counter);
@@ -47,4 +54,4 @@ exports.getNextUniqueId = () => {
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
-exports.counterFile = path.join(__dirname, 'counter.txt');
+exports.counterFile = path.join(__dirname, 'counter.txt'); //
